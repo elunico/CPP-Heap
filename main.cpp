@@ -2,6 +2,7 @@
 #include <cmath>
 #include <iostream>
 #include <vector>
+#include <array>
 
 void dump_heap(tom::heap<int> const &heap) {
   for (auto const &a : heap)
