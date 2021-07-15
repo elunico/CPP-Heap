@@ -1,8 +1,8 @@
 #include "heap.h"
+#include <array>
 #include <cmath>
 #include <iostream>
 #include <vector>
-#include <array>
 
 void dump_heap(tom::heap<int> const &heap) {
   for (auto const &a : heap)
@@ -36,6 +36,11 @@ int main() {
   for (int i = 0; i < 500000; i++)
     heap.put(Vector3D{rand() / (double)RAND_MAX, rand() / (double)RAND_MAX,
                       rand() / (double)RAND_MAX});
+
+  {
+    auto other = heap;
+    other.put({1.0, 2.0, 3.0});
+  }
 
   // std::vector<int> v{};
   // for (int i = 0; i < 500000; i++)

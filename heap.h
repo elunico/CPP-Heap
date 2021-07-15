@@ -66,9 +66,24 @@ template <typename T> class heap {
   void grow() { resize((std::size_t)((capacity << 1) + 1)); }
 
 public:
-  heap() noexcept : heap(std::greater<T>{}) {}
-
   explicit heap(int (*comparator)(T, T)) noexcept : comparator(comparator) {}
+
+  heap(const heap &other) : heap(other.comparator) {
+    data = new T[other.capacity]();
+    std::copy(other.begin(), other.end(), data);
+    count_ = other.count();
+    capacity = other.capacity;
+  }
+
+  heap(heap &&other) : heap(other.comparator) {
+    data = other.data;
+    other.data = nullptr;
+    count_ = other.count();
+    capacity = other.capacity;
+    comparator = other.comparator;
+  }
+
+  heap &operator=(heap const &other) { return *this; }
 
   void put(T t) {
     if (count_ == capacity) {

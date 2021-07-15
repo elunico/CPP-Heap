@@ -1,3 +1,0 @@
-/Users/thomaspovinelli/CLionProjects/CPP-Heap/build/CMakeFiles/rebuild_cache.dir
-/Users/thomaspovinelli/CLionProjects/CPP-Heap/build/CMakeFiles/edit_cache.dir
-/Users/thomaspovinelli/CLionProjects/CPP-Heap/build/CMakeFiles/cpp-heap.dir
