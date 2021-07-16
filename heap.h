@@ -11,20 +11,22 @@
 
 namespace tom {
 
-template <typename T> static void aswap(T arr[], int a, int b) {
+template <typename T>
+static void aswap(T arr[], int a, int b) {
   T const val = arr[a];
   arr[a] = arr[b];
   arr[b] = val;
 }
 
-template <typename T> using comparator_func = int (*)(T, T);
+template <typename T>
+using comparator_func = int (*)(T, T);
 
-template <typename T> class heap {
-
+template <typename T>
+class heap {
   comparator_func<T> comparator;
   std::size_t count_ = 0;
   std::size_t capacity = 0;
-  T *data = nullptr;
+  T* data = nullptr;
 
   void heapify() {
     std::size_t index = count_ - 1;
@@ -65,17 +67,17 @@ template <typename T> class heap {
 
   void grow() { resize((std::size_t)((capacity << 1) + 1)); }
 
-public:
+ public:
   explicit heap(int (*comparator)(T, T)) noexcept : comparator(comparator) {}
 
-  heap(const heap &other) : heap(other.comparator) {
+  heap(const heap& other) : heap(other.comparator) {
     data = new T[other.capacity]();
     std::copy(other.begin(), other.end(), data);
     count_ = other.count();
     capacity = other.capacity;
   }
 
-  heap(heap &&other) : heap(other.comparator) {
+  heap(heap&& other) : heap(other.comparator) {
     data = other.data;
     other.data = nullptr;
     count_ = other.count();
@@ -83,7 +85,7 @@ public:
     comparator = other.comparator;
   }
 
-  heap &operator=(heap const &other) { return *this; }
+  heap& operator=(heap const& other) { return *this; }
 
   void put(T t) {
     if (count_ == capacity) {
@@ -94,12 +96,12 @@ public:
     heapify();
   }
 
-  T const &peek() const noexcept {
+  T const& peek() const noexcept {
     assert(capacity > 0);
     return data[0];
   }
 
-  T &peek() noexcept {
+  T& peek() noexcept {
     assert(capacity > 0);
     return data[0];
   }
@@ -119,13 +121,13 @@ public:
       resize(capacity);
   }
 
-  auto *begin() noexcept { return data; }
+  auto* begin() noexcept { return data; }
 
-  auto const *begin() const noexcept { return data; }
+  auto const* begin() const noexcept { return data; }
 
-  auto *end() noexcept { return data + count_; }
+  auto* end() noexcept { return data + count_; }
 
-  auto const *end() const noexcept { return data + count_; }
+  auto const* end() const noexcept { return data + count_; }
 
   [[nodiscard]] std::size_t count() const noexcept { return count_; }
 
@@ -140,5 +142,5 @@ public:
   ~heap() noexcept { delete[] data; }
 };
 
-} // namespace tom
-#endif // MAXHEAP_HEAP_H
+}  // namespace tom
+#endif  // MAXHEAP_HEAP_H

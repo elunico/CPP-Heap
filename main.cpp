@@ -1,11 +1,11 @@
-#include "heap.h"
 #include <array>
 #include <cmath>
 #include <iostream>
 #include <vector>
+#include "heap.h"
 
-void dump_heap(tom::heap<int> const &heap) {
-  for (auto const &a : heap)
+void dump_heap(tom::heap<int> const& heap) {
+  for (auto const& a : heap)
     std::cout << a << " ";
   std::cout << std::endl;
 }
@@ -13,21 +13,20 @@ void dump_heap(tom::heap<int> const &heap) {
 struct Vector3D {
   double x, y, z;
 
-  int operator>(Vector3D const &other) {
+  int operator>(Vector3D const& other) {
     return sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2)) >
                    sqrt(pow(other.x, 2) + pow(other.y, 2) + pow(other.z, 2))
                ? 1
                : -1;
   }
 
-  int operator==(Vector3D const &other) {
+  int operator==(Vector3D const& other) {
     return sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2)) ==
            sqrt(pow(other.x, 2) + pow(other.y, 2) + pow(other.z, 2));
   }
 };
 
 int main() {
-
   auto heap = tom::heap<Vector3D>::max_heap();
 
   std::cout << "Size of a tom::heap " << sizeof(heap) << std::endl;
