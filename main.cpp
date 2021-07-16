@@ -13,10 +13,6 @@ void dump_heap(tom::heap<int> const &heap) {
 struct Vector3D {
   double x, y, z;
 
-  long long a, b;
-
-  std::array<double *, 10> arr;
-
   int operator>(Vector3D const &other) {
     return sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2)) >
                    sqrt(pow(other.x, 2) + pow(other.y, 2) + pow(other.z, 2))
@@ -36,11 +32,6 @@ int main() {
   for (int i = 0; i < 500000; i++)
     heap.put(Vector3D{rand() / (double)RAND_MAX, rand() / (double)RAND_MAX,
                       rand() / (double)RAND_MAX});
-
-  {
-    auto other = heap;
-    other.put({1.0, 2.0, 3.0});
-  }
 
   // std::vector<int> v{};
   // for (int i = 0; i < 500000; i++)
