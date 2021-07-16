@@ -115,7 +115,7 @@ public:
   }
 
   void reserve(std::size_t capacity) {
-    if (capacity > 0)
+    if (capacity > heap::capacity)
       resize(capacity);
   }
 
