@@ -29,6 +29,10 @@ struct Vector3D {
 int main() {
 
   auto heap = tom::heap<Vector3D>::max_heap();
+
+  std::cout << "Size of a tom::heap " << sizeof(heap) << std::endl;
+  std::cout << "Size of a Vector3D " << sizeof(Vector3D) << std::endl;
+
   for (int i = 0; i < 500000; i++)
     heap.put(Vector3D{rand() / (double)RAND_MAX, rand() / (double)RAND_MAX,
                       rand() / (double)RAND_MAX});
