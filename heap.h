@@ -19,7 +19,7 @@ static void aswap(T arr[], int a, int b) {
 }
 
 template <typename T>
-using comparator_func = int (*)(T, T);
+using comparator_func = int (*)(T const&, T const&);
 
 template <typename T>
 class heap {
@@ -68,7 +68,7 @@ class heap {
   void grow() { resize((std::size_t)((capacity << 1) + 1)); }
 
  public:
-  explicit heap(int (*comparator)(T, T)) noexcept : comparator(comparator) {}
+  explicit heap(comparator_func<T> comparator) noexcept : comparator(comparator) {}
 
   heap(const heap& other) : heap(other.comparator) {
     data = new T[other.capacity]();

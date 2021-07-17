@@ -13,7 +13,7 @@ void dump_heap(tom::heap<int> const& heap) {
 struct Vector3D {
   double x, y, z;
 
-  double mag() const { return sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2)); }
+  [[nodiscard]] double mag() const { return sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2)); }
 
   static Vector3D random();
 };
@@ -24,7 +24,7 @@ Vector3D Vector3D::random() {
 }
 
 int main() {
-  auto heap = tom::heap<Vector3D>{[](Vector3D self, Vector3D other) {
+  auto heap = tom::heap<Vector3D>{[](Vector3D const& self, Vector3D const& other) {
     double mag_a = self.mag();
     double mag_b = other.mag();
     return mag_a == mag_b ? 0 : (mag_a > mag_b ? 1 : -1);
@@ -41,11 +41,10 @@ int main() {
   for (int i = 0; i < 100000; i++)
     heap.put(Vector3D::random());
 
-  while (heap.count() > 0) {
+  for (int i = 0; i < 1000; i++) {
     auto p = heap.pop();
-    if (p.mag() > 1.45) {
-      std::cout << p.mag() << std::endl;
-    }
+
+    std::cout << p.mag() << std::endl;
   }
 
   std::cout << std::endl;
