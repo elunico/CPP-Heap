@@ -8,6 +8,7 @@
 #include <cassert>
 #include <cstddef>
 #include <functional>
+#include <iostream>
 
 namespace tom {
 
@@ -73,6 +74,7 @@ class heap {
       : comparator(comparator) {}
 
   heap(const heap& other) : heap(other.comparator) {
+    std::cout << "Copy constructor" << std::endl;
     data = new T[other.capacity]();
     std::copy(other.begin(), other.end(), data);
     count_ = other.count();
@@ -80,6 +82,7 @@ class heap {
   }
 
   heap(heap&& other) : heap(other.comparator) {
+    std::cout << "Move constructor" << std::endl;
     data = other.data;
     other.data = nullptr;
     count_ = other.count();
@@ -109,10 +112,10 @@ class heap {
   }
 
   T pop() {
-    assert(count_ - 1 >= 0);
+    assert(count_ > 0);
 
     aswap(data, 0, count_ - 1);
-    T value = data[count_ - 1];
+    T value = std::move(data[count_ - 1]);
     count_--;
     sift_down(0);
     return value;
@@ -143,7 +146,11 @@ class heap {
         +[](T const& a, T const& b) { return a > b ? 1 : (a == b ? 0 : -1); }};
   }
 
-  ~heap() noexcept { delete[] data; }
+  ~heap() noexcept {
+    std::cout << "data is " << data << std::endl;
+    if (data != nullptr)
+      delete[] data;
+  }
 };
 
 }  // namespace tom

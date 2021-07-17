@@ -45,25 +45,35 @@ int main() {
   std::cout << "Size of a tom::heap " << sizeof(heap) << std::endl;
   std::cout << "Size of a Vector3D " << sizeof(Vector3D{}) << std::endl;
 
+  int count = ((int)((rand() / (double)RAND_MAX) * 55500)) + 550;
+  std::cout << "Count of loops " << count << std::endl;
+
+  for (int i = 0; i < count; i++) {
+    heap.put(Vector3D::random());
+  }
+
+  for (int i = 0; i < count; i++) {
+    other.put(std::make_unique<Vector3D>(Vector3D::random()));
+  }
+
   {
     auto inner = heap;
     std::cout << inner.pop().mag() << std::endl;
   }
 
-  for (int i = 0; i < 1000; i++) {
-    heap.put(Vector3D::random());
+  std::cout << "Done copy heap" << std::endl;
+
+  {
+    auto next = std::move(other);
+    std::cout << next.pop()->mag() << std::endl;
   }
 
-  for (int i = 0; i < 1000; i++) {
-    other.put(std::make_unique<Vector3D>(Vector3D::random()));
-  }
+  std::cout << "Done move heap" << std::endl;
 
   for (int i = 0; i < 500; i++) {
     auto p = heap.pop();
-    auto q = heap.pop();
 
     std::cout << p.mag() << std::endl;
-    std::cout << q.mag() << std::endl;
   }
 
   std::cout << std::endl;

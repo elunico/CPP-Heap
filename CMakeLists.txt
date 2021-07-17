@@ -3,6 +3,6 @@ project(CPP-Heap)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(CMAKE_CXX_FLAGS "-O3 -DNDEBUG -DSOMETEST")
+set(CMAKE_CXX_FLAGS "-O3 -g")
 
 add_executable(cpp-heap heap.h heap.cpp main.cpp)
