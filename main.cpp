@@ -33,6 +33,11 @@ int main() {
   std::cout << "Size of a tom::heap " << sizeof(heap) << std::endl;
   std::cout << "Size of a Vector3D " << sizeof(Vector3D{}) << std::endl;
 
+  {
+    auto inner = heap;
+    std::cout << inner.pop().mag() << std::endl;
+  }
+
   for (int i = 0; i < 100000; i++)
     heap.put(Vector3D::random());
 
