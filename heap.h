@@ -13,9 +13,9 @@ namespace tom {
 
 template <typename T>
 static void aswap(T arr[], int a, int b) {
-  T const val = arr[a];
-  arr[a] = arr[b];
-  arr[b] = val;
+  T val = std::move(arr[a]);
+  arr[a] = std::move(arr[b]);
+  arr[b] = std::move(val);
 }
 
 template <typename T>
@@ -58,7 +58,8 @@ class heap {
 
   void resize(std::size_t target) {
     auto newData = new T[target]();
-    std::copy(begin(), end(), newData);
+    // non-overlapping memory can be moved to right?
+    std::move(begin(), end(), newData);
     if (data != nullptr)
       delete[] data;
     data = newData;
@@ -68,7 +69,8 @@ class heap {
   void grow() { resize((std::size_t)((capacity << 1) + 1)); }
 
  public:
-  explicit heap(comparator_func<T> comparator) noexcept : comparator(comparator) {}
+  explicit heap(comparator_func<T> comparator) noexcept
+      : comparator(comparator) {}
 
   heap(const heap& other) : heap(other.comparator) {
     data = new T[other.capacity]();
@@ -92,7 +94,7 @@ class heap {
       grow();
     }
     assert(count_ < capacity);
-    data[count_++] = t;
+    data[count_++] = std::move(t);
     heapify();
   }
 
@@ -132,11 +134,13 @@ class heap {
   [[nodiscard]] std::size_t count() const noexcept { return count_; }
 
   static heap max_heap() {
-    return heap{+[](T a, T b) { return a > b ? 1 : (a == b ? 0 : -1); }};
+    return heap{
+        +[](T const& a, T const& b) { return a > b ? 1 : (a == b ? 0 : -1); }};
   }
 
   static heap min_heap() {
-    return heap{+[](T a, T b) { return a > b ? 1 : (a == b ? 0 : -1); }};
+    return heap{
+        +[](T const& a, T const& b) { return a > b ? 1 : (a == b ? 0 : -1); }};
   }
 
   ~heap() noexcept { delete[] data; }
