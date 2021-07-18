@@ -76,6 +76,8 @@ class heap {
   void grow() { resize((std::size_t)((capacity << 1) + 1)); }
 
  public:
+  using comparator_parameter_type = T const&;
+
   explicit heap(comparator_func<T> comparator) noexcept
       : comparator(comparator) {
     assert(comparator != nullptr);
@@ -96,7 +98,15 @@ class heap {
     comparator = other.comparator;
   }
 
-  heap& operator=(heap const& other) { return *this; }
+  heap& operator=(heap const& other) {
+    if (&other != this) {
+      comparator = other.comparator;
+      count_ = other.count_;
+      capacity = other.capacity;
+      data = std::copy(other.begin(), other.end(), other.count());
+    }
+    return *this;
+  }
 
   void put(T t) {
     if (count_ == capacity) {
