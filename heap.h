@@ -151,7 +151,7 @@ class heap {
 
   static heap min_heap() {
     return heap{
-        +[](T const& a, T const& b) { return a > b ? 1 : (a == b ? 0 : -1); }};
+        +[](T const& a, T const& b) { return a < b ? 1 : (a == b ? 0 : -1); }};
   }
 
   ~heap() noexcept {
