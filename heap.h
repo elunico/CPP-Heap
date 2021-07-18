@@ -8,12 +8,12 @@
 #include <cassert>
 #include <cstddef>
 #include <functional>
-#include <iostream>
 
 namespace tom {
 
 template <typename T>
 static void aswap(T arr[], int a, int b) {
+  assert(arr != nullptr);
   T val = std::move(arr[a]);
   arr[a] = std::move(arr[b]);
   arr[b] = std::move(val);
@@ -58,9 +58,15 @@ class heap {
   }
 
   void resize(std::size_t target) {
+    // no shrinking
+    assert(target > capacity);
     auto newData = new T[target]();
-    // non-overlapping memory can be moved to right?
-    std::move(begin(), end(), newData);
+    // non-overlapping memory can be moved
+    auto start = begin();
+    auto finish = end();
+    assert((newData < start && (newData + capacity) < finish) ||
+           newData > finish);
+    std::move(start, finish, newData);
     if (data != nullptr)
       delete[] data;
     data = newData;
@@ -71,10 +77,11 @@ class heap {
 
  public:
   explicit heap(comparator_func<T> comparator) noexcept
-      : comparator(comparator) {}
+      : comparator(comparator) {
+    assert(comparator != nullptr);
+  }
 
   heap(const heap& other) : heap(other.comparator) {
-    std::cout << "Copy constructor" << std::endl;
     data = new T[other.capacity]();
     std::copy(other.begin(), other.end(), data);
     count_ = other.count();
@@ -82,7 +89,6 @@ class heap {
   }
 
   heap(heap&& other) : heap(other.comparator) {
-    std::cout << "Move constructor" << std::endl;
     data = other.data;
     other.data = nullptr;
     count_ = other.count();
@@ -102,12 +108,12 @@ class heap {
   }
 
   T const& peek() const noexcept {
-    assert(capacity > 0);
+    assert(count_ > 0);
     return data[0];
   }
 
   T& peek() noexcept {
-    assert(capacity > 0);
+    assert(count_ > 0);
     return data[0];
   }
 
@@ -136,6 +142,8 @@ class heap {
 
   [[nodiscard]] std::size_t count() const noexcept { return count_; }
 
+  [[nodiscard]] int is_empty() const noexcept { return count() > 0; }
+
   static heap max_heap() {
     return heap{
         +[](T const& a, T const& b) { return a > b ? 1 : (a == b ? 0 : -1); }};
@@ -147,7 +155,6 @@ class heap {
   }
 
   ~heap() noexcept {
-    std::cout << "data is " << data << std::endl;
     if (data != nullptr)
       delete[] data;
   }

@@ -26,7 +26,7 @@ Vector3D Vector3D::random() {
                   rand() / (double)RAND_MAX};
 }
 
-int main() {
+void original_test() {
   auto heap =
       tom::heap<Vector3D>{[](Vector3D const& self, Vector3D const& other) {
         double mag_a = self.mag();
@@ -51,15 +51,19 @@ int main() {
   for (int i = 0; i < count; i++) {
     heap.put(Vector3D::random());
   }
+  assert(heap.count() == count);
 
   for (int i = 0; i < count; i++) {
     other.put(std::make_unique<Vector3D>(Vector3D::random()));
   }
+  assert(other.count() == count);
 
   {
     auto inner = heap;
     std::cout << inner.pop().mag() << std::endl;
+    assert(inner.count() == count - 1);
   }
+  assert(heap.count() == count);
 
   std::cout << "Done copy heap" << std::endl;
 
@@ -77,6 +81,10 @@ int main() {
   }
 
   std::cout << std::endl;
+}
+
+int main() {
+  original_test();
 
   return 0;
 }
