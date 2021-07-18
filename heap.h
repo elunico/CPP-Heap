@@ -103,7 +103,11 @@ class heap {
       comparator = other.comparator;
       count_ = other.count_;
       capacity = other.capacity;
-      data = std::copy(other.begin(), other.end(), other.count());
+      if (data != nullptr) {
+        delete[] data;
+      }
+      data = new T[capacity]();
+      std::copy(other.begin(), other.end(), data);
     }
     return *this;
   }

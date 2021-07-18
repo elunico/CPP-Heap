@@ -28,12 +28,12 @@ Vector3D Vector3D::random() {
 }
 
 void original_test() {
-  auto heap =
-      tom::heap<Vector3D>{[](Vector3D const& self, Vector3D const& other) {
-        double mag_a = self.mag();
-        double mag_b = other.mag();
-        return mag_a == mag_b ? 0 : (mag_a > mag_b ? 1 : -1);
-      }};
+  auto vec_compare = [](Vector3D const& self, Vector3D const& other) {
+    double mag_a = self.mag();
+    double mag_b = other.mag();
+    return mag_a == mag_b ? 0 : (mag_a > mag_b ? 1 : -1);
+  };
+  auto heap = tom::heap<Vector3D>{vec_compare};
 
   auto other = tom::heap<std::unique_ptr<Vector3D>>{
       [](std::unique_ptr<Vector3D> const& self,
@@ -60,7 +60,9 @@ void original_test() {
   assert(other.count() == count);
 
   {
-    auto inner = heap;
+    tom::heap<Vector3D> inner{vec_compare};
+    inner.put(Vector3D::random());
+    inner = heap;
     std::cout << inner.pop().mag() << std::endl;
     assert(inner.count() == count - 1);
   }
@@ -99,7 +101,7 @@ int random_int(int lower, int higher) {
 }
 
 int main() {
-  // original_test();
+  original_test();
 
   std::vector<int> v{};
   int const max = 5000;
