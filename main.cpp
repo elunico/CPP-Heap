@@ -5,7 +5,8 @@
 #include <vector>
 #include "heap.h"
 
-void dump_heap(tom::heap<int> const& heap) {
+template <typename T>
+void dump_heap(tom::heap<T> const& heap) {
   for (auto const& a : heap)
     std::cout << a << " ";
   std::cout << std::endl;
@@ -83,8 +84,36 @@ void original_test() {
   std::cout << std::endl;
 }
 
+template <typename T>
+void heap_sort_in_place(std::vector<T>& vec) {
+  auto heap = tom::heap<T>::min_heap();
+  for (auto& a : vec)
+    heap.put(std::move(a));
+
+  for (int i = 0; i < vec.size(); i++)
+    vec[i] = heap.pop();
+}
+
+int random_int(int lower, int higher) {
+  return (int)(((rand() / (double)RAND_MAX) * (higher - lower)) + lower);
+}
+
 int main() {
-  original_test();
+  // original_test();
+
+  std::vector<int> v{};
+  int const max = 5000;
+  v.reserve(max);
+  for (int i = 0; i < max; i++) {
+    v.push_back(random_int(0, max));
+  }
+
+  heap_sort_in_place(v);
+
+  for (auto const& a : v) {
+    std::cout << a << "\n";
+  }
+  std::cout << std::endl;
 
   return 0;
 }
