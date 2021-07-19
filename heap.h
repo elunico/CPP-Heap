@@ -152,7 +152,25 @@ class heap {
   std::size_t depth() const noexcept {
     return sizeof(count()) - __builtin_clzl(count());
   }
+
+#else
+
+  std::size_t depth() const noexcept {
+    std::size_t highest = 0;
+    auto c = count();
+    int pos = 1;
+    while (c) {
+      if (c & 1)
+        highest = pos;
+
+      c >>= 1;
+      pos++;
+    }
+    return highest;
+  }
+
 #endif
+
 #else
 
   std::size_t depth() const noexcept {
