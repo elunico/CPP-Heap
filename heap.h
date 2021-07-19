@@ -67,13 +67,23 @@ class heap {
     assert((newData < start && (newData + capacity) < finish) ||
            newData > finish);
     std::move(start, finish, newData);
-    if (data != nullptr)
-      delete[] data;
+    dealloc();
     data = newData;
     capacity = target;
   }
 
   void grow() { resize((std::size_t)((capacity << 1) + 1)); }
+
+  void dealloc() {
+    if (data != nullptr)
+      delete[] data;
+    data = nullptr;
+  }
+
+  void zero() {
+    count_ = 0;
+    capacity = 0;
+  }
 
  public:
   using comparator_parameter_type = T const&;
@@ -96,6 +106,7 @@ class heap {
     count_ = other.count();
     capacity = other.capacity;
     comparator = other.comparator;
+    other.zero();
   }
 
   heap& operator=(heap const& other) {
@@ -110,6 +121,11 @@ class heap {
       std::copy(other.begin(), other.end(), data);
     }
     return *this;
+  }
+
+  void clear() noexcept {
+    dealloc();
+    zero();
   }
 
   void put(T t) {
@@ -155,7 +171,7 @@ class heap {
 #if CAN_CLZL
 
   std::size_t depth() const noexcept {
-    return sizeof(count()) - __builtin_clzl(count());
+    return (8 * sizeof(count())) - __builtin_clzl(count());
   }
 
 #else
@@ -198,10 +214,7 @@ class heap {
         +[](T const& a, T const& b) { return a > b ? -1 : (a == b ? 0 : 1); }};
   }
 
-  ~heap() noexcept {
-    if (data != nullptr)
-      delete[] data;
-  }
+  ~heap() noexcept { dealloc(); }
 };
 
 }  // namespace tom
