@@ -146,7 +146,7 @@ class heap {
       resize(capacity);
   }
 
-#if __has_builtin
+#if defined(__has_builtin)
 #if __has_builtin(__builtin_clzl)
 #define CAN_CLZL 1
 #endif
