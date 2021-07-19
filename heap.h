@@ -146,21 +146,22 @@ class heap {
       resize(capacity);
   }
 
-#if defined(__has_builtin) && __has_builtin(__builtin_clzl)
+#if defined(__has_builtin)
+#if __has_builtin(__builtin_clzl)
 
   std::size_t depth() const noexcept {
     return sizeof(count()) - __builtin_clzl(count());
   }
-
+#endif
 #else
 
   std::size_t depth() const noexcept {
     std::size_t highest = 0;
     auto c = count();
-    pos = 1;
+    int pos = 1;
     while (c) {
       if (c & 1)
-        higest = pos;
+        highest = pos;
 
       c >>= 1;
       pos++;
