@@ -146,6 +146,30 @@ class heap {
       resize(capacity);
   }
 
+#if defined(__has_builtin) && __has_builtin(__builtin_clzl)
+
+  std::size_t depth() const noexcept {
+    return sizeof(count()) - __builtin_clzl(count());
+  }
+
+#else
+
+  std::size_t depth() const noexcept {
+    std::size_t highest = 0;
+    auto c = count();
+    pos = 1;
+    while (c) {
+      if (c & 1)
+        higest = pos;
+
+      c >>= 1;
+      pos++;
+    }
+    return highest;
+  }
+
+#endif
+
   auto* begin() noexcept { return data; }
 
   auto const* begin() const noexcept { return data; }
