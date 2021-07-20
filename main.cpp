@@ -100,7 +100,15 @@ int random_int(int lower, int higher) {
   return (int)(((rand() / (double)RAND_MAX) * (higher - lower)) + lower);
 }
 
+struct T{
+	double x, y;
+};
+
 int main() {
+	tom::heap<T> z{[](auto a, auto b) { return 1; }};
+	for (int i = 0; i < 20; i++) {
+		z.put(T{1, 2});
+	}
   original_test();
 
   std::vector<int> v{};

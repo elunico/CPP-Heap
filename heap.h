@@ -60,7 +60,7 @@ class heap {
   void resize(std::size_t target) {
     // no shrinking
     assert(target > capacity);
-    auto newData = new T[target]();
+    auto newData = new T[target];
     // non-overlapping memory can be moved
     auto start = begin();
     auto finish = end();
@@ -94,7 +94,7 @@ class heap {
   }
 
   heap(const heap& other) : heap(other.comparator) {
-    data = new T[other.capacity]();
+    data = new T[other.capacity];
     std::copy(other.begin(), other.end(), data);
     count_ = other.count();
     capacity = other.capacity;
@@ -117,7 +117,7 @@ class heap {
       if (data != nullptr) {
         delete[] data;
       }
-      data = new T[capacity]();
+      data = new T[capacity];
       std::copy(other.begin(), other.end(), data);
     }
     return *this;
