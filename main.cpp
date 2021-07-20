@@ -117,7 +117,7 @@ struct T {
   double x, y;
 };
 
-int main() {
+int main(int argc, char const *argv[]) {
   if (argc == 2) {
     std::srand(std::atol(argv[1]));
   } else {
