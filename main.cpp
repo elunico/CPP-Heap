@@ -1,5 +1,6 @@
 #include <array>
 #include <cmath>
+#include <cstdlib>
 #include <iostream>
 #include <memory>
 #include <vector>
@@ -11,6 +12,10 @@ void dump_heap(tom::heap<T> const& heap) {
     std::cout << a << " ";
   std::cout << std::endl;
 }
+
+#ifndef NDEBUG
+#define SHOW_EXPR(x) std::cout << "[DEBUG]: " << #x << " = " << x << std::endl
+#endif
 
 struct Vector3D {
   double x, y, z;
@@ -58,8 +63,14 @@ void original_test() {
   }
   assert(other.count() == count);
 
-  std::cout << "Depth of value heap " << heap.depth() << "; Count of values: " << heap.count() << std::endl;
-  assert(ceil(log2(heap.count())) == heap.depth()); 
+  std::cout << "Depth of value heap " << heap.depth()
+            << "; Count of values: " << heap.count() << std::endl;
+
+  // TODO: ./cpp-heap 1092 fails this assertion because depth is 11 but count is
+  // 1024
+  SHOW_EXPR(log2(heap.count()));
+  SHOW_EXPR(ceil(log2(heap.count())));
+  assert(ceil(log2(heap.count())) == heap.depth());
 
   {
     tom::heap<Vector3D> inner{vec_compare};
@@ -102,7 +113,12 @@ int random_int(int lower, int higher) {
   return (int)(((rand() / (double)RAND_MAX) * (higher - lower)) + lower);
 }
 
-int main() {
+int main(int argc, char const* argv[]) {
+  if (argc == 2) {
+    std::srand(std::atol(argv[1]));
+  } else {
+    std::srand(0UL);
+  }
   original_test();
 
   std::vector<int> v{};
