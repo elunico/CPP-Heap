@@ -3,6 +3,6 @@ project(CPP-Heap)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(CMAKE_CXX_FLAGS "-O0 -g")
+set(CMAKE_CXX_FLAGS "-O3 -fno-exceptions -fno-rtti")
 
 add_executable(cpp-heap heap.h heap.cpp main.cpp)

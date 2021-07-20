@@ -27,20 +27,19 @@ Vector3D Vector3D::random() {
                   rand() / (double)RAND_MAX};
 }
 
+static int vec_compare(Vector3D const& self, Vector3D const& that) {
+  double a = self.mag();
+  double b = self.mag();
+  return a == b ? 0 : (a > b ? 1 : -1);
+}
+
 void original_test() {
-  auto vec_compare = [](Vector3D const& self, Vector3D const& other) {
-    double mag_a = self.mag();
-    double mag_b = other.mag();
-    return mag_a == mag_b ? 0 : (mag_a > mag_b ? 1 : -1);
-  };
   auto heap = tom::heap<Vector3D>{vec_compare};
 
   auto other = tom::heap<std::unique_ptr<Vector3D>>{
       [](std::unique_ptr<Vector3D> const& self,
          std::unique_ptr<Vector3D> const& other) {
-        double mag_a = self->mag();
-        double mag_b = other->mag();
-        return mag_a == mag_b ? 0 : (mag_a > mag_b ? 1 : -1);
+        return vec_compare(*self, *other);
       }};
 
   std::cout << "Size of a tom::heap " << sizeof(heap) << std::endl;
