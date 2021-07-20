@@ -68,6 +68,7 @@ void original_test() {
 
   // TODO: ./cpp-heap 1092 fails this assertion because depth is 11 but count is
   // 1024
+  SHOW_EXPR(heap.depth());
   SHOW_EXPR(log2(heap.count()));
   SHOW_EXPR(ceil(log2(heap.count())));
   assert(ceil(log2(heap.count())) == heap.depth());
