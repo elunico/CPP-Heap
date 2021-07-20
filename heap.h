@@ -8,6 +8,7 @@
 #include <cassert>
 #include <cstddef>
 #include <functional>
+#include "debug.h"
 
 namespace tom {
 
@@ -64,8 +65,13 @@ class heap {
     // non-overlapping memory can be moved
     auto start = begin();
     auto finish = end();
-    assert((newData < start && (newData + capacity) < finish) ||
-           newData > finish);
+    SHOW_STR("Start in resize");
+    SHOW_EXPR(newData);
+    SHOW_EXPR(start);
+    SHOW_EXPR(newData + capacity);
+    SHOW_EXPR(finish);
+    assert((newData < start && (newData + capacity) <= finish) ||
+           newData >= finish);
     std::move(start, finish, newData);
     dealloc();
     data = newData;

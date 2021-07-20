@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <memory>
+#include <type_traits>
 #include <vector>
 #include "heap.h"
 
@@ -12,10 +13,6 @@ void dump_heap(tom::heap<T> const& heap) {
     std::cout << a << " ";
   std::cout << std::endl;
 }
-
-#ifndef NDEBUG
-#define SHOW_EXPR(x) std::cout << "[DEBUG]: " << #x << " = " << x << std::endl
-#endif
 
 struct Vector3D {
   double x, y, z;
@@ -117,7 +114,11 @@ struct T {
   double x, y;
 };
 
-int main(int argc, char const *argv[]) {
+int main(int argc, char const* argv[]) {
+  static_assert(std::is_move_constructible<Vector3D>::value,
+                "Vector3D is not move constructible");
+  static_assert(std::is_move_assignable<Vector3D>::value,
+                "Vector3D is not move assignable");
   if (argc == 2) {
     std::srand(std::atol(argv[1]));
   } else {
