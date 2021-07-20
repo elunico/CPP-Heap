@@ -1,5 +1,6 @@
 #include <array>
 #include <cmath>
+#include <cstdlib>
 #include <iostream>
 #include <memory>
 #include <vector>
@@ -11,6 +12,10 @@ void dump_heap(tom::heap<T> const& heap) {
     std::cout << a << " ";
   std::cout << std::endl;
 }
+
+#ifndef NDEBUG
+#define SHOW_EXPR(x) std::cout << "[DEBUG]: " << #x << " = " << x << std::endl
+#endif
 
 struct Vector3D {
   double x, y, z;
@@ -27,20 +32,19 @@ Vector3D Vector3D::random() {
                   rand() / (double)RAND_MAX};
 }
 
+static int vec_compare(Vector3D const& self, Vector3D const& that) {
+  double a = self.mag();
+  double b = self.mag();
+  return a == b ? 0 : (a > b ? 1 : -1);
+}
+
 void original_test() {
-  auto vec_compare = [](Vector3D const& self, Vector3D const& other) {
-    double mag_a = self.mag();
-    double mag_b = other.mag();
-    return mag_a == mag_b ? 0 : (mag_a > mag_b ? 1 : -1);
-  };
   auto heap = tom::heap<Vector3D>{vec_compare};
 
   auto other = tom::heap<std::unique_ptr<Vector3D>>{
       [](std::unique_ptr<Vector3D> const& self,
          std::unique_ptr<Vector3D> const& other) {
-        double mag_a = self->mag();
-        double mag_b = other->mag();
-        return mag_a == mag_b ? 0 : (mag_a > mag_b ? 1 : -1);
+        return vec_compare(*self, *other);
       }};
 
   std::cout << "Size of a tom::heap " << sizeof(heap) << std::endl;
@@ -58,6 +62,15 @@ void original_test() {
     other.put(std::make_unique<Vector3D>(Vector3D::random()));
   }
   assert(other.count() == count);
+
+  std::cout << "Depth of value heap " << heap.depth()
+            << "; Count of values: " << heap.count() << std::endl;
+
+  // TODO: ./cpp-heap 1092 fails this assertion because depth is 11 but count is
+  // 1024
+  SHOW_EXPR(log2(heap.count()));
+  SHOW_EXPR(ceil(log2(heap.count())));
+  assert(ceil(log2(heap.count())) == heap.depth());
 
   {
     tom::heap<Vector3D> inner{vec_compare};
@@ -100,15 +113,22 @@ int random_int(int lower, int higher) {
   return (int)(((rand() / (double)RAND_MAX) * (higher - lower)) + lower);
 }
 
-struct T{
-	double x, y;
+struct T {
+  double x, y;
 };
 
 int main() {
-	tom::heap<T> z{[](auto a, auto b) { return 1; }};
-	for (int i = 0; i < 20; i++) {
-		z.put(T{1, 2});
-	}
+  if (argc == 2) {
+    std::srand(std::atol(argv[1]));
+  } else {
+    std::srand(0UL);
+  }
+
+  tom::heap<T> z{[](auto a, auto b) { return 1; }};
+  for (int i = 0; i < 20; i++) {
+    z.put(T{1, 2});
+  }
+
   original_test();
 
   std::vector<int> v{};
