@@ -59,6 +59,9 @@ void original_test() {
   }
   assert(other.count() == count);
 
+  std::cout << "Depth of value heap " << heap.depth() << "; Count of values: " << heap.count() << std::endl;
+  assert(ceil(log2(heap.count())) == heap.depth()); 
+
   {
     tom::heap<Vector3D> inner{vec_compare};
     inner.put(Vector3D::random());
