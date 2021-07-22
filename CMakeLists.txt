@@ -1,7 +1,23 @@
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.21)
+include(CheckIncludeFiles)
+include(CheckIncludeFileCXX)
 project(CPP-Heap)
 
 set(CMAKE_CXX_STANDARD 17)
+
+CHECK_INCLUDE_FILES("cassert;cstdlib;functional" HAS_HEAP)
+CHECK_INCLUDE_FILE_CXX("array" ARRAY)
+CHECK_INCLUDE_FILE_CXX("cmath" MATH)
+CHECK_INCLUDE_FILE_CXX("cstdlib" STDLIB)
+CHECK_INCLUDE_FILE_CXX("iostream" IOSTREAM)
+CHECK_INCLUDE_FILE_CXX("memory" MEMORY)
+CHECK_INCLUDE_FILE_CXX("type_traits" TYPETRAIT)
+CHECK_INCLUDE_FILE_CXX("vector" VECTOR)
+
+if(NOT ARRAY OR NOT MATH OR NOT STDLIB OR NOT IOSTREAM OR NOT MEMORY OR NOT TYPETRAIT OR NOT VECTOR)
+  message(FATAL_ERROR "Cannnot find cassert, cstdlib, or functional headers")
+endif(NOT ARRAY OR NOT MATH OR NOT STDLIB OR NOT IOSTREAM OR NOT MEMORY OR NOT TYPETRAIT OR NOT VECTOR)
+
 
 set(CMAKE_CXX_FLAGS "-O3 -fno-exceptions -fno-rtti")
 
